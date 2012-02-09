@@ -36,7 +36,14 @@ public:
 
     // Angle in radians
     qreal angle() const;
-    void setAngle(qreal pos);
+    void setAngle(qreal angle);
+
+    // tan(angle)
+    qreal slope() const;
+    void setSlope(qreal slope);
+
+    // Coordinates of intersection with a line which is parallel to y-axis
+    QPointF planeIntersection(qreal planeX) const;
 
 private:
     QPointF m_position;

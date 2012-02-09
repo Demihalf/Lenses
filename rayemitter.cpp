@@ -22,7 +22,48 @@
 
 #include "rayemitter.h"
 
-RayEmitter::RayEmitter()
-{
+#include <qmath.h>
 
+RayEmitter::RayEmitter(const QPointF &pos, qreal angle)
+    : m_position(pos), m_angle(angle)
+{
+}
+
+QPointF RayEmitter::pos() const
+{
+    return m_position;
+}
+
+void RayEmitter::setPos(const QPointF &pos)
+{
+    if (pos != m_position) {
+        m_position = pos;
+    }
+}
+
+qreal RayEmitter::angle() const
+{
+    return m_angle;
+}
+
+void RayEmitter::setAngle(qreal angle)
+{
+    if (angle != m_angle) {
+        m_angle = angle;
+    }
+}
+
+qreal RayEmitter::slope() const
+{
+    return qTan(m_angle);
+}
+
+void RayEmitter::setSlope(qreal slope)
+{
+    m_angle = qAtan(slope);
+}
+
+QPointF RayEmitter::planeIntersection(qreal planeX) const
+{
+    return QPointF(planeX, slope() * (planeX - pos().x()) + pos().y());
 }
