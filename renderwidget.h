@@ -60,6 +60,9 @@ private:
     QPoint m_offset;
     qreal m_scalingFactor;
 
+    // -1 if we drag the whole view
+    int m_draggedEmitter;
+
     bool m_dragging;
     QPoint m_lastMousePos;
 };

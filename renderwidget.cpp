@@ -31,6 +31,7 @@
 
 const int kMoveStep = 20;
 const qreal kZoomStep = 1.0;
+const int kEmitterRadius = 5;
 
 RenderWidget::RenderWidget(QWidget *parent) :
     QWidget(parent),
@@ -112,28 +113,37 @@ void RenderWidget::paintLens(QPainter &p)
 
     p.setPen(QPen(QBrush(Qt::black), 2));
 
-    p.drawLine(width() / 2, offset, width() / 2, height() - offset);
+    p.drawLine(width() / 2, offset,
+               width() / 2, height() - offset);
 
     if (m_focalLength > 0) {
         p.drawLine(width() / 2, offset,
                    width() / 2 - capWidth, offset + capWidth);
+
         p.drawLine(width() / 2, offset,
                    width() / 2 + capWidth, offset + capWidth);
 
         p.drawLine(width() / 2, height() - offset,
-                   width() / 2 - capWidth, height() - offset - capWidth);
+                   width() / 2 - capWidth,
+                   height() - offset - capWidth);
+
         p.drawLine(width() / 2, height() - offset,
-                   width() / 2 + capWidth, height() - offset - capWidth);
+                   width() / 2 + capWidth,
+                   height() - offset - capWidth);
     } else {
         p.drawLine(width() / 2, offset,
                    width() / 2 - capWidth, offset - capWidth);
+
         p.drawLine(width() / 2, offset,
                    width() / 2 + capWidth, offset - capWidth);
 
         p.drawLine(width() / 2, height() - offset,
-                   width() / 2 - capWidth, height() - offset + capWidth);
+                   width() / 2 - capWidth,
+                   height() - offset + capWidth);
+
         p.drawLine(width() / 2, height() - offset,
-                   width() / 2 + capWidth, height() - offset + capWidth);
+                   width() / 2 + capWidth,
+                   height() - offset + capWidth);
     }
 
     p.restore();
@@ -141,6 +151,16 @@ void RenderWidget::paintLens(QPainter &p)
 
 void RenderWidget::paintRay(QPainter &p, const RayEmitter &emitter)
 {
+    p.save();
+
+    p.setPen(QPen(QBrush(Qt::red), 1));
+    p.setBrush(QBrush(Qt::red));
+
+    p.drawEllipse(cartesianToInternal(emitter.pos()),
+                  kEmitterRadius, kEmitterRadius);
+
+    p.restore();
+
     p.save();
 
     p.setPen(QPen(QBrush(Qt::blue), 2));

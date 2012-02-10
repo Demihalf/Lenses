@@ -33,59 +33,57 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->m_sourceXBox, SIGNAL(valueChanged(double)),
+    connect(ui->m_sourceXBox, SIGNAL(valueChanged(int)),
             SLOT(emitterChanged()));
-    connect(ui->m_sourceYBox, SIGNAL(valueChanged(double)),
+    connect(ui->m_sourceYBox, SIGNAL(valueChanged(int)),
             SLOT(emitterChanged()));
     connect(ui->m_sourceAngleBox, SIGNAL(valueChanged(double)),
             SLOT(emitterChanged()));
-    connect(ui->m_focalLengthBox, SIGNAL(valueChanged(double)),
+    connect(ui->m_focalLengthBox, SIGNAL(valueChanged(int)),
             SLOT(emitterChanged()));
 
-    QList<RayEmitter> emitters;
-    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-                                   ui->m_sourceYBox->value()),
-                           ui->m_sourceAngleBox->value() * M_PI / 180.0);
-    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-                                   ui->m_sourceYBox->value()),
-                           qAtan(ui->m_sourceYBox->value() / ui->m_sourceXBox->value()));
+    connect(ui->m_sourceAngleSlider, SIGNAL(valueChanged(int)),
+            SLOT(angleChanged(int)));
+    connect(ui->m_sourceAngleBox, SIGNAL(valueChanged(double)),
+            SLOT(angleChanged(double)));
 
-//    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-//                                   ui->m_sourceYBox->value() - 1),
-//                           ui->m_sourceAngleBox->value() * M_PI / 180.0);
-
-//    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-//                                   ui->m_sourceYBox->value() - 2),
-//                           ui->m_sourceAngleBox->value() * M_PI / 180.0);
-
-    ui->m_plotArea->setLensFocalLength(ui->m_focalLengthBox->value());
-
-    ui->m_plotArea->setEmitters(emitters);
+    emitterChanged();
 }
 
 void MainWindow::emitterChanged()
 {
+    RayEmitter base(QPointF(ui->m_sourceXBox->value() / 10.0,
+                           ui->m_sourceYBox->value() / 10.0),
+                    ui->m_sourceAngleBox->value() * M_PI / 180.0);
+
     QList<RayEmitter> emitters;
 
-    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-                                   ui->m_sourceYBox->value()),
-                           ui->m_sourceAngleBox->value() * M_PI / 180.0);
-
-    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-                                   ui->m_sourceYBox->value()),
-                           qAtan(ui->m_sourceYBox->value() / ui->m_sourceXBox->value()));
+    emitters << base << RayEmitter(base.pos() + QPointF(0, -1), base.angle())
+             << RayEmitter(base.pos() + QPointF(0, -2), base.angle())
+             << RayEmitter(base.pos() + QPointF(0, -3), base.angle());
 
 //    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-//                                   ui->m_sourceYBox->value() - 1),
-//                           ui->m_sourceAngleBox->value() * M_PI / 180.0);
+//                                   ui->m_sourceYBox->value()),
+//                           qAtan(ui->m_sourceYBox->value() / ui->m_sourceXBox->value()));
 
-//    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-//                                   ui->m_sourceYBox->value() - 2),
-//                           ui->m_sourceAngleBox->value() * M_PI / 180.0);
 
-    ui->m_plotArea->setLensFocalLength(ui->m_focalLengthBox->value());
+    ui->m_plotArea->setLensFocalLength(ui->m_focalLengthBox->value() / 10.0);
 
     ui->m_plotArea->setEmitters(emitters);
+}
+
+void MainWindow::angleChanged(double angle)
+{
+    if (ui->m_sourceAngleSlider->value() != angle * 10) {
+        ui->m_sourceAngleSlider->setValue(angle * 10);
+    }
+}
+
+void MainWindow::angleChanged(int angle)
+{
+    if (ui->m_sourceAngleBox->value() != angle / 10.0) {
+        ui->m_sourceAngleBox->setValue(angle / 10.0);
+    }
 }
 
 MainWindow::~MainWindow()

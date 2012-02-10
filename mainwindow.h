@@ -39,6 +39,8 @@ public:
 
 private slots:
     void emitterChanged();
+    void angleChanged(double angle);
+    void angleChanged(int angle);
 
 private:
     Ui::MainWindow *ui;
