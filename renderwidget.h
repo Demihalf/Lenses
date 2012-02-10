@@ -42,6 +42,11 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event);
+    void wheelEvent(QWheelEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     void paintAxis(QPainter &p);
@@ -52,7 +57,11 @@ private:
     QList<RayEmitter> m_emitters;
     qreal m_focalLength;
 
-    static const qreal kScalingFactor = 40.0;
+    QPoint m_offset;
+    qreal m_scalingFactor;
+
+    bool m_dragging;
+    QPoint m_lastMousePos;
 };
 
 #endif // RENDERWIDGET_H

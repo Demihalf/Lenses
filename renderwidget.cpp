@@ -24,9 +24,19 @@
 
 #include <QPainter>
 #include <QBrush>
+#include <QWheelEvent>
+#include <QCoreApplication>
+
+#include <QDebug>
+
+const int kMoveStep = 20;
+const qreal kZoomStep = 1.0;
 
 RenderWidget::RenderWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    m_offset(0, 0),
+    m_scalingFactor(40.0),
+    m_dragging(false)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -58,8 +68,8 @@ qreal RenderWidget::lensFocalLength() const
 
 QPoint RenderWidget::cartesianToInternal(const QPointF &point)
 {
-    QPoint newPoint((this->width() / 2) + point.x() * kScalingFactor,
-                    (this->height() / 2) - point.y() * kScalingFactor);
+    QPoint newPoint((this->width() / 2) + point.x() * m_scalingFactor,
+                    (this->height() / 2) - point.y() * m_scalingFactor);
 
     return newPoint;
 }
@@ -67,26 +77,27 @@ QPoint RenderWidget::cartesianToInternal(const QPointF &point)
 void RenderWidget::paintAxis(QPainter &p)
 {
     int axisY = height() / 2;
-    p.drawLine(0, axisY, width(), axisY);
+    p.drawLine(-m_offset.x(), axisY, width() - m_offset.x(), axisY);
 
     // Focuses
     QPoint tick1 = cartesianToInternal(QPointF(m_focalLength, 0));
     QPoint tick2 = cartesianToInternal(QPointF(-m_focalLength, 0));
 
-    const int tickHeight = 20;
+    const int tickHeight = 10;
 
-    p.drawLine(tick1.x(), tick1.y() + tickHeight / 2,
-               tick1.x(), tick1.y() - tickHeight / 2);
-    p.drawLine(tick2.x(), tick2.y() + tickHeight / 2,
-               tick2.x(), tick2.y() - tickHeight / 2);
+    p.drawLine(tick1.x(), tick1.y() + tickHeight,
+               tick1.x(), tick1.y() - tickHeight);
+
+    p.drawLine(tick2.x(), tick2.y() + tickHeight,
+               tick2.x(), tick2.y() - tickHeight);
 
     // Focal planes
     p.save();
 
     p.setPen(Qt::DashLine);
 
-    p.drawLine(tick1.x(), 0, tick1.x(), height());
-    p.drawLine(tick2.x(), 0, tick2.x(), height());
+    p.drawLine(tick1.x(), -m_offset.y(), tick1.x(), height() - m_offset.y());
+    p.drawLine(tick2.x(), -m_offset.y(), tick2.x(), height() - m_offset.y());
 
     p.restore();
 
@@ -175,6 +186,7 @@ void RenderWidget::paintEvent(QPaintEvent *event)
     Q_UNUSED(event)
 
     QPainter p(this);
+    p.translate(m_offset);
     p.setRenderHint(QPainter::Antialiasing, true);
 
     paintAxis(p);
@@ -184,3 +196,67 @@ void RenderWidget::paintEvent(QPaintEvent *event)
         paintRay(p, emitter);
     }
 }
+
+void RenderWidget::wheelEvent(QWheelEvent *event)
+{
+    m_scalingFactor += event->delta() / 8 / 15 * kZoomStep;
+    update();
+}
+
+void RenderWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Left:
+        m_offset += QPoint(kMoveStep, 0);
+        break;
+    case Qt::Key_Right:
+        m_offset += QPoint(-kMoveStep, 0);
+        break;
+    case Qt::Key_Down:
+        m_offset += QPoint(0, -kMoveStep);
+        break;
+    case Qt::Key_Up:
+        m_offset += QPoint(0, kMoveStep);
+        break;
+    default:
+        QWidget::keyReleaseEvent(event);
+        return;
+    }
+
+    update();
+}
+
+void RenderWidget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_lastMousePos = event->pos();
+        m_dragging = true;
+        setCursor(QCursor(Qt::ClosedHandCursor));
+    } else {
+        m_dragging = false;
+        event->ignore();
+    }
+}
+
+void RenderWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_dragging) {
+        m_offset -= m_lastMousePos - event->pos();
+        m_lastMousePos = event->pos();
+
+        update();
+    } else {
+        event->ignore();
+    }
+}
+
+void RenderWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_dragging = false;
+        setCursor(QCursor(Qt::ArrowCursor));
+    } else {
+        event->ignore();
+    }
+}
+

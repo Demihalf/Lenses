@@ -173,6 +173,9 @@
      </item>
      <item>
       <widget class="RenderWidget" name="m_plotArea" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
        <property name="styleSheet">
         <string notr="true"/>
        </property>
