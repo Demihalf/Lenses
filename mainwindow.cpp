@@ -26,6 +26,7 @@
 #include "rayemitter.h"
 
 #include <qmath.h>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -52,15 +53,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::emitterChanged()
 {
-    RayEmitter base(QPointF(ui->m_sourceXBox->value() / 10.0,
+    qreal height = 5;
+    RayEmitter top(QPointF(ui->m_sourceXBox->value() / 10.0,
                            ui->m_sourceYBox->value() / 10.0),
                     ui->m_sourceAngleBox->value() * M_PI / 180.0);
+    RayEmitter bottom(top.pos() - QPointF(0, height), top.angle());
 
     QList<RayEmitter> emitters;
 
-    emitters << base << RayEmitter(base.pos() + QPointF(0, -1), base.angle())
-             << RayEmitter(base.pos() + QPointF(0, -2), base.angle())
-             << RayEmitter(base.pos() + QPointF(0, -3), base.angle());
+    emitters << top
+             << RayEmitter(top.pos(), qAtan(top.pos().y() / top.pos().x()))
+             << bottom
+             << RayEmitter(bottom.pos(), qAtan(bottom.pos().y() / bottom.pos().x()));
 
 //    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
 //                                   ui->m_sourceYBox->value()),
