@@ -34,63 +34,109 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->m_sourceXBox, SIGNAL(valueChanged(int)),
-            SLOT(emitterChanged()));
-    connect(ui->m_sourceYBox, SIGNAL(valueChanged(int)),
-            SLOT(emitterChanged()));
-    connect(ui->m_sourceAngleBox, SIGNAL(valueChanged(double)),
-            SLOT(emitterChanged()));
-    connect(ui->m_focalLengthBox, SIGNAL(valueChanged(int)),
-            SLOT(emitterChanged()));
+    connect(ui->sourceXBox, SIGNAL(valueChanged(int)), ui->plotArea,
+            SLOT(emitterXChanged(int)));
+    connect(ui->sourceYBox, SIGNAL(valueChanged(int)), ui->plotArea,
+            SLOT(emitterYChanged(int)));
+    connect(ui->sourceAngleBox, SIGNAL(valueChanged(double)), ui->plotArea,
+            SLOT(emitterAngleChanged(double)));
 
-    connect(ui->m_sourceAngleSlider, SIGNAL(valueChanged(int)),
+    connect(ui->focalLengthBox, SIGNAL(valueChanged(int)), ui->plotArea,
+            SLOT(lensFocalLengthChanged(int)));
+
+    connect(ui->sourceAngleSlider, SIGNAL(valueChanged(int)),
             SLOT(angleChanged(int)));
-    connect(ui->m_sourceAngleBox, SIGNAL(valueChanged(double)),
+    connect(ui->sourceAngleBox, SIGNAL(valueChanged(double)),
             SLOT(angleChanged(double)));
 
-    emitterChanged();
-}
+    connect(ui->emittersList, SIGNAL(currentRowChanged(int)), ui->plotArea,
+            SLOT(setCurrentEmitter(int)));
 
-void MainWindow::emitterChanged()
-{
-    qreal height = 5;
-    RayEmitter top(QPointF(ui->m_sourceXBox->value() / 10.0,
-                           ui->m_sourceYBox->value() / 10.0),
-                    ui->m_sourceAngleBox->value() * M_PI / 180.0);
-    RayEmitter bottom(top.pos() - QPointF(0, height), top.angle());
+    connect(ui->deleteEmitterButton, SIGNAL(clicked()), SLOT(deleteEmitter()));
+    connect(ui->addEmitterButton, SIGNAL(clicked()), SLOT(addEmitter()));
 
-    QList<RayEmitter> emitters;
+    connect(ui->plotArea, SIGNAL(currentEmitterChanged(int)), SLOT(currentEmitterChanged(int)));
 
-    emitters << top
-             << RayEmitter(top.pos(), qAtan(top.pos().y() / top.pos().x()))
-             << bottom
-             << RayEmitter(bottom.pos(), qAtan(bottom.pos().y() / bottom.pos().x()));
+    setControlsActive(false);
 
-//    emitters << RayEmitter(QPointF(ui->m_sourceXBox->value(),
-//                                   ui->m_sourceYBox->value()),
-//                           qAtan(ui->m_sourceYBox->value() / ui->m_sourceXBox->value()));
-
-
-    ui->m_plotArea->setLensFocalLength(ui->m_focalLengthBox->value() / 10.0);
-
-    ui->m_plotArea->setEmitters(emitters);
-}
-
-void MainWindow::angleChanged(double angle)
-{
-    if (ui->m_sourceAngleSlider->value() != angle * 10) {
-        ui->m_sourceAngleSlider->setValue(angle * 10);
-    }
-}
-
-void MainWindow::angleChanged(int angle)
-{
-    if (ui->m_sourceAngleBox->value() != angle / 10.0) {
-        ui->m_sourceAngleBox->setValue(angle / 10.0);
-    }
+    ui->plotArea->setLensFocalLength(ui->focalLengthBox->value() / 10.0);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::currentEmitterChanged(int index)
+{
+    if (index != -1) {
+        const RayEmitter& emitter = ui->plotArea->emitterAt(index);
+
+        ui->sourceAngleBox->setValue(emitter.angle() * 180.0 / M_PI);
+        ui->sourceXBox->setValue(emitter.pos().x() * 10);
+        ui->sourceYBox->setValue(emitter.pos().y() * 10);
+
+        if (ui->emittersList->currentRow() != index) {
+            ui->emittersList->setCurrentRow(index);
+        }
+    }
+}
+
+void MainWindow::angleChanged(double angle)
+{
+    if (ui->sourceAngleSlider->value() != angle * 10) {
+        ui->sourceAngleSlider->setValue(angle * 10);
+    }
+}
+
+void MainWindow::angleChanged(int angle)
+{
+    if (ui->sourceAngleBox->value() != angle / 10.0) {
+        ui->sourceAngleBox->setValue(angle / 10.0);
+    }
+}
+
+void MainWindow::addEmitter()
+{
+    ui->plotArea->addEmitter();
+
+    ui->emittersList->addItem(QString("Emitter %1").arg(ui->emittersList->count() + 1));
+    ui->emittersList->setCurrentRow(ui->emittersList->count() - 1);
+
+    setControlsActive(true);
+}
+
+void MainWindow::deleteEmitter()
+{
+    int row = ui->emittersList->currentRow();
+    if (row != -1) {
+        delete ui->emittersList->takeItem(row);
+
+        ui->plotArea->removeEmitter(row);
+    }
+
+    if (ui->emittersList->count() == 0) {
+        setControlsActive(false);
+    }
+}
+
+void MainWindow::setControlsActive(bool active)
+{
+    ui->sourcePositionLabel->setEnabled(active);
+
+    ui->sourceXBox->setEnabled(active);
+    ui->sourceXSlider->setEnabled(active);
+    ui->sourceXLabel->setEnabled(active);
+
+    ui->sourceXBox->setEnabled(active);
+    ui->sourceXSlider->setEnabled(active);
+    ui->sourceXLabel->setEnabled(active);
+
+    ui->sourceYBox->setEnabled(active);
+    ui->sourceYSlider->setEnabled(active);
+    ui->sourceYLabel->setEnabled(active);
+
+    ui->sourceAngleBox->setEnabled(active);
+    ui->sourceAngleSlider->setEnabled(active);
+    ui->sourceAngleLabel->setEnabled(active);
 }

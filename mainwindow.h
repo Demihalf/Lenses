@@ -26,7 +26,7 @@
 #include <QWidget>
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 class MainWindow : public QWidget
@@ -38,14 +38,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void emitterChanged();
+    void currentEmitterChanged(int index);
     void angleChanged(double angle);
     void angleChanged(int angle);
 
-private:
-    Ui::MainWindow *ui;
+    void addEmitter();
+    void deleteEmitter();
 
-    static const int kScale = 50;
+private:
+    void setControlsActive(bool active);
+
+    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

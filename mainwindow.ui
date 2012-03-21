@@ -13,225 +13,294 @@
   <property name="windowTitle">
    <string>Lenses</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,0">
+  <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,1">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0">
+    <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="RenderWidget" name="m_plotArea" native="true">
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
+      <widget class="QLabel" name="listLabel">
+       <property name="text">
+        <string>Emitters:</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="emittersList"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QPushButton" name="addEmitterButton">
+         <property name="text">
+          <string>Add</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="deleteEmitterButton">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,0">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0">
        <item>
-        <widget class="QLabel" name="m_focalLengthLabel">
-         <property name="text">
-          <string>Focal length:</string>
+        <widget class="RenderWidget" name="plotArea" native="true">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="m_focalLengthSlider">
-         <property name="minimum">
-          <number>-500</number>
-         </property>
-         <property name="maximum">
-          <number>500</number>
-         </property>
-         <property name="sliderPosition">
-          <number>50</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksBelow</enum>
-         </property>
-         <property name="tickInterval">
-          <number>50</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="m_focalLengthBox">
-         <property name="minimum">
-          <number>-500</number>
-         </property>
-         <property name="maximum">
-          <number>500</number>
-         </property>
-         <property name="value">
-          <number>50</number>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QLabel" name="m_sourcePositionLabel">
-         <property name="text">
-          <string>Source position:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="leftMargin">
-          <number>10</number>
-         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLabel" name="m_sourceXLabel">
-             <property name="text">
-              <string>x:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSlider" name="m_sourceXSlider">
-             <property name="minimum">
-              <number>-1000</number>
-             </property>
-             <property name="maximum">
-              <number>-1</number>
-             </property>
-             <property name="sliderPosition">
-              <number>-60</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="tickPosition">
-              <enum>QSlider::TicksBelow</enum>
-             </property>
-             <property name="tickInterval">
-              <number>50</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="m_sourceXBox">
-             <property name="minimum">
-              <number>-1000</number>
-             </property>
-             <property name="maximum">
-              <number>-1</number>
-             </property>
-             <property name="value">
-              <number>-60</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QLabel" name="focalLengthLabel">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Focal length:</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <widget class="QSlider" name="focalLengthSlider">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimum">
+            <number>-500</number>
+           </property>
+           <property name="maximum">
+            <number>500</number>
+           </property>
+           <property name="sliderPosition">
+            <number>50</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TicksBelow</enum>
+           </property>
+           <property name="tickInterval">
+            <number>50</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="focalLengthBox">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimum">
+            <number>-500</number>
+           </property>
+           <property name="maximum">
+            <number>500</number>
+           </property>
+           <property name="value">
+            <number>50</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+         <item>
+          <widget class="QLabel" name="sourcePositionLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Emitter position:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="leftMargin">
+            <number>10</number>
+           </property>
            <item>
-            <widget class="QLabel" name="m_sourceYLabel">
-             <property name="text">
-              <string>y:</string>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="sourceXLabel">
+               <property name="text">
+                <string>x:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="sourceXSlider">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimum">
+                <number>-1000</number>
+               </property>
+               <property name="maximum">
+                <number>-1</number>
+               </property>
+               <property name="sliderPosition">
+                <number>-60</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+               <property name="tickInterval">
+                <number>50</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="sourceXBox">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimum">
+                <number>-1000</number>
+               </property>
+               <property name="maximum">
+                <number>-1</number>
+               </property>
+               <property name="value">
+                <number>-60</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
-            <widget class="QSlider" name="m_sourceYSlider">
-             <property name="minimum">
-              <number>-1000</number>
-             </property>
-             <property name="maximum">
-              <number>1000</number>
-             </property>
-             <property name="value">
-              <number>30</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="tickPosition">
-              <enum>QSlider::TicksBelow</enum>
-             </property>
-             <property name="tickInterval">
-              <number>50</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="m_sourceYBox">
-             <property name="minimum">
-              <number>-1000</number>
-             </property>
-             <property name="maximum">
-              <number>1000</number>
-             </property>
-             <property name="value">
-              <number>30</number>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="sourceYLabel">
+               <property name="text">
+                <string>y:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="sourceYSlider">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimum">
+                <number>-1000</number>
+               </property>
+               <property name="maximum">
+                <number>1000</number>
+               </property>
+               <property name="value">
+                <number>30</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+               <property name="tickInterval">
+                <number>50</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="sourceYBox">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimum">
+                <number>-1000</number>
+               </property>
+               <property name="maximum">
+                <number>1000</number>
+               </property>
+               <property name="value">
+                <number>30</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
         </layout>
        </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QLabel" name="m_sourceAngleLabel">
-         <property name="text">
-          <string>Source angle:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="m_sourceAngleSlider">
-         <property name="minimum">
-          <number>-899</number>
-         </property>
-         <property name="maximum">
-          <number>899</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksBelow</enum>
-         </property>
-         <property name="tickInterval">
-          <number>50</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="m_sourceAngleBox">
-         <property name="suffix">
-          <string>°</string>
-         </property>
-         <property name="decimals">
-          <number>1</number>
-         </property>
-         <property name="minimum">
-          <double>-89.900000000000006</double>
-         </property>
-         <property name="maximum">
-          <double>89.900000000000006</double>
-         </property>
-         <property name="singleStep">
-          <double>0.500000000000000</double>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="sourceAngleLabel">
+           <property name="text">
+            <string>Emitter angle:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="sourceAngleSlider">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimum">
+            <number>-899</number>
+           </property>
+           <property name="maximum">
+            <number>899</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TicksBelow</enum>
+           </property>
+           <property name="tickInterval">
+            <number>50</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="sourceAngleBox">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="suffix">
+            <string>°</string>
+           </property>
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="minimum">
+            <double>-89.900000000000006</double>
+           </property>
+           <property name="maximum">
+            <double>89.900000000000006</double>
+           </property>
+           <property name="singleStep">
+            <double>0.500000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
@@ -251,9 +320,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>m_focalLengthSlider</sender>
+   <sender>focalLengthSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_focalLengthBox</receiver>
+   <receiver>focalLengthBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -267,9 +336,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_focalLengthBox</sender>
+   <sender>focalLengthBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_focalLengthSlider</receiver>
+   <receiver>focalLengthSlider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -283,9 +352,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_sourceXSlider</sender>
+   <sender>sourceXSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_sourceXBox</receiver>
+   <receiver>sourceXBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -299,9 +368,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_sourceXBox</sender>
+   <sender>sourceXBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_sourceXSlider</receiver>
+   <receiver>sourceXSlider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -315,9 +384,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_sourceYSlider</sender>
+   <sender>sourceYSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_sourceYBox</receiver>
+   <receiver>sourceYBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -331,9 +400,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_sourceYBox</sender>
+   <sender>sourceYBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_sourceYSlider</receiver>
+   <receiver>sourceYSlider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">

@@ -34,11 +34,23 @@ class RenderWidget : public QWidget
 public:
     explicit RenderWidget(QWidget *parent = 0);
 
-    void setEmitters(const QList<RayEmitter>& points);
-    QList<RayEmitter> emitters() const;
+    const RayEmitter& emitterAt(int index) const;
 
     void setLensFocalLength(qreal len);
     qreal lensFocalLength() const;
+
+public slots:
+    void emitterXChanged(int newValue);
+    void emitterYChanged(int newValue);
+    void emitterAngleChanged(double newValue);
+    void lensFocalLengthChanged(int newValue);
+
+    void addEmitter();
+    void removeEmitter(int index);
+    void setCurrentEmitter(int index);
+
+signals:
+    void currentEmitterChanged(int index);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -51,7 +63,9 @@ protected:
 private:
     void paintAxis(QPainter &p);
     void paintLens(QPainter &p);
+    void paintEmitter(QPainter &p, const QPoint &pos, bool selected);
     void paintRay(QPainter &p, const RayEmitter &emitter);
+
     QPoint cartesianToInternal(const QPointF &point);
 
     QList<RayEmitter> m_emitters;
@@ -60,8 +74,7 @@ private:
     QPoint m_offset;
     qreal m_scalingFactor;
 
-    // -1 if we drag the whole view
-    int m_draggedEmitter;
+    int m_currentEmitter;
 
     bool m_dragging;
     QPoint m_lastMousePos;
