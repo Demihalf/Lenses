@@ -55,7 +55,7 @@ signals:
 protected:
     void paintEvent(QPaintEvent *event);
     void wheelEvent(QWheelEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
@@ -66,7 +66,8 @@ private:
     void paintEmitter(QPainter &p, const QPoint &pos, bool selected);
     void paintRay(QPainter &p, const RayEmitter &emitter);
 
-    QPoint cartesianToInternal(const QPointF &point);
+    inline QPoint cartesianToInternal(const QPointF &point);
+    inline QPointF internalToCartesian(const QPoint &point);
 
     QList<RayEmitter> m_emitters;
     qreal m_focalLength;
@@ -77,6 +78,7 @@ private:
     int m_currentEmitter;
 
     bool m_dragging;
+    bool m_draggingEmitter;
     QPoint m_lastMousePos;
 };
 

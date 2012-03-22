@@ -63,6 +63,16 @@ void RayEmitter::setSlope(qreal slope)
     m_angle = qAtan(slope);
 }
 
+QColor RayEmitter::color() const
+{
+    return m_color;
+}
+
+void RayEmitter::setColor(const QColor &color)
+{
+    m_color = color;
+}
+
 QPointF RayEmitter::planeIntersection(qreal planeX) const
 {
     return QPointF(planeX, slope() * (planeX - pos().x()) + pos().y());

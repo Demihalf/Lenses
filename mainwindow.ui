@@ -24,21 +24,37 @@
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="emittersList"/>
+      <widget class="QListWidget" name="emittersList">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
         <widget class="QPushButton" name="addEmitterButton">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="text">
           <string>Add</string>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+A</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="deleteEmitterButton">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="text">
           <string>Delete</string>
+         </property>
+         <property name="shortcut">
+          <string>Del</string>
          </property>
         </widget>
        </item>
@@ -81,6 +97,9 @@
            <property name="enabled">
             <bool>true</bool>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="minimum">
             <number>-500</number>
            </property>
@@ -105,6 +124,9 @@
           <widget class="QSpinBox" name="focalLengthBox">
            <property name="enabled">
             <bool>true</bool>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="minimum">
             <number>-500</number>
@@ -153,6 +175,9 @@
                <property name="enabled">
                 <bool>true</bool>
                </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="minimum">
                 <number>-1000</number>
                </property>
@@ -177,6 +202,9 @@
               <widget class="QSpinBox" name="sourceXBox">
                <property name="enabled">
                 <bool>true</bool>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
                </property>
                <property name="minimum">
                 <number>-1000</number>
@@ -205,6 +233,9 @@
                <property name="enabled">
                 <bool>true</bool>
                </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="minimum">
                 <number>-1000</number>
                </property>
@@ -229,6 +260,9 @@
               <widget class="QSpinBox" name="sourceYBox">
                <property name="enabled">
                 <bool>true</bool>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
                </property>
                <property name="minimum">
                 <number>-1000</number>
@@ -261,6 +295,9 @@
            <property name="enabled">
             <bool>true</bool>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="minimum">
             <number>-899</number>
            </property>
@@ -282,6 +319,9 @@
           <widget class="QDoubleSpinBox" name="sourceAngleBox">
            <property name="enabled">
             <bool>true</bool>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="suffix">
             <string>°</string>

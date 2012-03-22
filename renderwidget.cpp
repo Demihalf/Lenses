@@ -31,7 +31,7 @@
 
 #include <cmath>
 
-const int kMoveStep = 20;
+const qreal kMoveStep = 0.1;
 const qreal kZoomStep = 5.0;
 const int kEmitterRadius = 5;
 
@@ -42,7 +42,8 @@ RenderWidget::RenderWidget(QWidget *parent) :
     m_offset(0, 0),
     m_scalingFactor(40.0),
     m_currentEmitter(-1),
-    m_dragging(false)
+    m_dragging(false),
+    m_draggingEmitter(false)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -52,17 +53,6 @@ const RayEmitter& RenderWidget::emitterAt(int index) const
 {
     return m_emitters.at(index);
 }
-
-//void RenderWidget::setEmitters(const QList<RayEmitter>& points)
-//{
-//    m_emitters = points;
-//    update();
-//}
-
-//QList<RayEmitter> RenderWidget::emitters() const
-//{
-//    return m_emitters;
-//}
 
 void RenderWidget::setLensFocalLength(qreal len)
 {
@@ -77,11 +67,18 @@ qreal RenderWidget::lensFocalLength() const
     return m_focalLength;
 }
 
-QPoint RenderWidget::cartesianToInternal(const QPointF &point)
+inline QPoint RenderWidget::cartesianToInternal(const QPointF &point)
 {
     QPoint newPoint((this->width() / 2) + point.x() * m_scalingFactor,
                     (this->height() / 2) - point.y() * m_scalingFactor);
 
+    return newPoint;
+}
+
+inline QPointF RenderWidget::internalToCartesian(const QPoint &point)
+{
+    QPointF newPoint((point.x() - this->width() / 2) / m_scalingFactor,
+                     (this->height() / 2 - point.y()) / m_scalingFactor);
     return newPoint;
 }
 
@@ -180,7 +177,7 @@ void RenderWidget::paintRay(QPainter &p, const RayEmitter &emitter)
 {
     p.save();
 
-    p.setPen(QPen(QBrush(Qt::blue), 2));
+    p.setPen(QPen(QBrush(emitter.color()), 2));
 
     RayEmitter parallel(QPointF(0.0, 0.0), emitter.angle());
 
@@ -204,7 +201,7 @@ void RenderWidget::paintRay(QPainter &p, const RayEmitter &emitter)
     } else {
         p.save();
 
-        p.setPen(QPen(QBrush(Qt::blue), 1, Qt::DashLine));
+        p.setPen(QPen(QBrush(emitter.color()), 1, Qt::DashLine));
         p.drawLine(cartesianToInternal(lensIntersect),
                    cartesianToInternal(focalPlaneIntersect));
 
@@ -242,23 +239,49 @@ void RenderWidget::wheelEvent(QWheelEvent *event)
     update();
 }
 
-void RenderWidget::keyReleaseEvent(QKeyEvent *event)
+void RenderWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
-    case Qt::Key_Left:
-        m_offset += QPoint(kMoveStep, 0);
-        break;
-    case Qt::Key_Right:
-        m_offset += QPoint(-kMoveStep, 0);
-        break;
-    case Qt::Key_Down:
-        m_offset += QPoint(0, -kMoveStep);
-        break;
-    case Qt::Key_Up:
-        m_offset += QPoint(0, kMoveStep);
-        break;
-    default:
-        QWidget::keyReleaseEvent(event);
+    if (m_currentEmitter != -1) {
+        RayEmitter& em = m_emitters[m_currentEmitter];
+        QPointF emPos = em.pos();
+
+        switch (event->key()) {
+        case Qt::Key_Left:
+            emPos.setX(emPos.x() - kMoveStep);
+            break;
+        case Qt::Key_Right:
+            if (int(emPos.x() * 10) == -1) {
+                break;
+            }
+
+            emPos.setX(emPos.x() + kMoveStep);
+            break;
+        case Qt::Key_Down:
+            if (event->modifiers().testFlag(Qt::ControlModifier)) {
+                em.setAngle(em.angle() - 0.5 * M_PI / 180);
+            } else {
+                emPos.setY(emPos.y() - kMoveStep);
+            }
+
+            break;
+        case Qt::Key_Up:
+            if (event->modifiers().testFlag(Qt::ControlModifier)) {
+                em.setAngle(em.angle() + M_PI / 180);
+            } else {
+                emPos.setY(emPos.y() + kMoveStep);
+            }
+
+            break;
+        default:
+            QWidget::keyPressEvent(event);
+            return;
+        }
+
+        em.setPos(emPos);
+
+        emit currentEmitterChanged(m_currentEmitter);
+    } else {
+        QWidget::keyPressEvent(event);
         return;
     }
 
@@ -279,15 +302,21 @@ void RenderWidget::mousePressEvent(QMouseEvent *event)
                     && eventY < emY + 10 && eventY > emY - 10)
             {
                 setCurrentEmitter(i);
-                return;
+                m_draggingEmitter = true;
+
+                break;
             }
         }
 
         m_lastMousePos = event->pos();
-        m_dragging = true;
-        setCursor(QCursor(Qt::ClosedHandCursor));
+
+        if (!m_draggingEmitter) {
+            m_dragging = true;
+            setCursor(QCursor(Qt::ClosedHandCursor));
+        }
     } else {
         m_dragging = false;
+        m_draggingEmitter = false;
         event->ignore();
     }
 }
@@ -299,6 +328,22 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *event)
         m_lastMousePos = event->pos();
 
         update();
+    } else if (m_draggingEmitter) {
+        RayEmitter& em = m_emitters[m_currentEmitter];
+
+        qDebug() << m_lastMousePos - event->pos() << cartesianToInternal(em.pos());
+
+        QPointF emPos = internalToCartesian(
+                    cartesianToInternal(em.pos()) - (m_lastMousePos - event->pos()));
+
+        qDebug() << cartesianToInternal(emPos);
+        qDebug() << "\n";
+
+        m_lastMousePos = event->pos();
+        em.setPos(emPos);
+
+        emit currentEmitterChanged(m_currentEmitter);
+        update();
     } else {
         event->ignore();
     }
@@ -308,6 +353,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         m_dragging = false;
+        m_draggingEmitter = false;
         setCursor(QCursor(Qt::ArrowCursor));
     } else {
         event->ignore();
@@ -317,17 +363,23 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent *event)
 void RenderWidget::emitterXChanged(int newValue)
 {
     RayEmitter &emitter = m_emitters[m_currentEmitter];
-    emitter.setPos(QPointF(newValue / 10.0, emitter.pos().y()));
 
-    update();
+    if (int(emitter.pos().x() * 10) != newValue) {
+        emitter.setPos(QPointF(newValue / 10.0, emitter.pos().y()));
+
+        update();
+    }
 }
 
 void RenderWidget::emitterYChanged(int newValue)
 {
     RayEmitter &emitter = m_emitters[m_currentEmitter];
-    emitter.setPos(QPointF(emitter.pos().x(), newValue / 10.0));
 
-    update();
+    if (int(emitter.pos().y() * 10) != newValue) {
+        emitter.setPos(QPointF(emitter.pos().x(), newValue / 10.0));
+
+        update();
+    }
 }
 
 void RenderWidget::emitterAngleChanged(double newValue)
@@ -346,7 +398,14 @@ void RenderWidget::lensFocalLengthChanged(int newValue)
 
 void RenderWidget::addEmitter()
 {
-    m_emitters.append(RayEmitter(kDefaultPos, 0));
+    RayEmitter em(kDefaultPos, 0);
+
+    const int angleStep = 10;
+    QColor color;
+    color.setHsv((qrand() % (360 / angleStep)) * angleStep, 255, 200);
+    em.setColor(color);
+
+    m_emitters.append(em);
     update();
 }
 

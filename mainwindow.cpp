@@ -100,10 +100,11 @@ void MainWindow::addEmitter()
 {
     ui->plotArea->addEmitter();
 
-    ui->emittersList->addItem(QString("Emitter %1").arg(ui->emittersList->count() + 1));
+    ui->emittersList->addItem(tr("Emitter %1").arg(ui->emittersList->count() + 1));
     ui->emittersList->setCurrentRow(ui->emittersList->count() - 1);
 
     setControlsActive(true);
+    ui->plotArea->setFocus();
 }
 
 void MainWindow::deleteEmitter()
@@ -118,6 +119,8 @@ void MainWindow::deleteEmitter()
     if (ui->emittersList->count() == 0) {
         setControlsActive(false);
     }
+
+    ui->plotArea->setFocus();
 }
 
 void MainWindow::setControlsActive(bool active)

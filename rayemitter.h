@@ -24,6 +24,7 @@
 #define RAYEMITTER_H
 
 #include <QPointF>
+#include <QColor>
 
 // Point that emits light in one direction
 class RayEmitter
@@ -42,12 +43,17 @@ public:
     qreal slope() const;
     void setSlope(qreal slope);
 
+    QColor color() const;
+    void setColor(const QColor& color);
+
     // Coordinates of intersection with a line which is parallel to y-axis
     QPointF planeIntersection(qreal planeX) const;
 
 private:
     QPointF m_position;
     qreal m_angle;
+
+    QColor m_color;
 };
 
 #endif // RAYEMITTER_H
