@@ -32,18 +32,39 @@
 #include <cmath>
 
 const qreal kMoveStep = 0.1;
-const qreal kZoomStep = 5.0;
+const qreal kZoomStep = 0.5;
 const int kEmitterRadius = 5;
+const qreal kScalingFactor = 10.0;
 
-const QPointF kDefaultPos(-6, 3);
+const QPointF kDefaultPos(-25, 15);
+
+const QList<Qt::GlobalColor> kColors =
+{
+    Qt::red,
+    Qt::green,
+    Qt::blue,
+    Qt::cyan,
+    Qt::magenta,
+    Qt::yellow,
+    Qt::gray,
+    Qt::darkRed,
+    Qt::darkGreen,
+    Qt::darkBlue,
+    Qt::darkCyan,
+    Qt::darkMagenta,
+    Qt::darkYellow,
+    Qt::darkGray,
+    Qt::black
+};
 
 RenderWidget::RenderWidget(QWidget *parent) :
     QWidget(parent),
     m_offset(0, 0),
-    m_scalingFactor(40.0),
+    m_scalingFactor(kScalingFactor),
     m_currentEmitter(-1),
     m_dragging(false),
-    m_draggingEmitter(false)
+    m_draggingEmitter(false),
+    m_lastColor(0)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -245,6 +266,8 @@ void RenderWidget::keyPressEvent(QKeyEvent *event)
         RayEmitter& em = m_emitters[m_currentEmitter];
         QPointF emPos = em.pos();
 
+        const qreal angleStep = 0.5;
+
         switch (event->key()) {
         case Qt::Key_Left:
             emPos.setX(emPos.x() - kMoveStep);
@@ -258,7 +281,7 @@ void RenderWidget::keyPressEvent(QKeyEvent *event)
             break;
         case Qt::Key_Down:
             if (event->modifiers().testFlag(Qt::ControlModifier)) {
-                em.setAngle(em.angle() - 0.5 * M_PI / 180);
+                em.setAngle(em.angle() - angleStep * M_PI / 180);
             } else {
                 emPos.setY(emPos.y() - kMoveStep);
             }
@@ -266,7 +289,7 @@ void RenderWidget::keyPressEvent(QKeyEvent *event)
             break;
         case Qt::Key_Up:
             if (event->modifiers().testFlag(Qt::ControlModifier)) {
-                em.setAngle(em.angle() + M_PI / 180);
+                em.setAngle(em.angle() + angleStep * M_PI / 180);
             } else {
                 emPos.setY(emPos.y() + kMoveStep);
             }
@@ -330,14 +353,14 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *event)
         update();
     } else if (m_draggingEmitter) {
         RayEmitter& em = m_emitters[m_currentEmitter];
+        QPointF emPos;
+        QPoint offset = m_lastMousePos - event->pos();
 
-        qDebug() << m_lastMousePos - event->pos() << cartesianToInternal(em.pos());
+        emPos = internalToCartesian(cartesianToInternal(em.pos()) - offset);
 
-        QPointF emPos = internalToCartesian(
-                    cartesianToInternal(em.pos()) - (m_lastMousePos - event->pos()));
-
-        qDebug() << cartesianToInternal(emPos);
-        qDebug() << "\n";
+        if ((int)emPos.x() >= -1 && offset.x() < 0) {
+            emPos.setX(-1);
+        }
 
         m_lastMousePos = event->pos();
         em.setPos(emPos);
@@ -364,8 +387,8 @@ void RenderWidget::emitterXChanged(int newValue)
 {
     RayEmitter &emitter = m_emitters[m_currentEmitter];
 
-    if (int(emitter.pos().x() * 10) != newValue) {
-        emitter.setPos(QPointF(newValue / 10.0, emitter.pos().y()));
+    if ((int)emitter.pos().x() != newValue) {
+        emitter.setPos(QPointF(newValue, emitter.pos().y()));
 
         update();
     }
@@ -375,8 +398,8 @@ void RenderWidget::emitterYChanged(int newValue)
 {
     RayEmitter &emitter = m_emitters[m_currentEmitter];
 
-    if (int(emitter.pos().y() * 10) != newValue) {
-        emitter.setPos(QPointF(emitter.pos().x(), newValue / 10.0));
+    if ((int)emitter.pos().y() != newValue) {
+        emitter.setPos(QPointF(emitter.pos().x(), newValue));
 
         update();
     }
@@ -392,18 +415,14 @@ void RenderWidget::emitterAngleChanged(double newValue)
 
 void RenderWidget::lensFocalLengthChanged(int newValue)
 {
-    m_focalLength = newValue / 10.0;
+    m_focalLength = newValue;
     update();
 }
 
 void RenderWidget::addEmitter()
 {
     RayEmitter em(kDefaultPos, 0);
-
-    const int angleStep = 10;
-    QColor color;
-    color.setHsv((qrand() % (360 / angleStep)) * angleStep, 255, 200);
-    em.setColor(color);
+    em.setColor(kColors[m_lastColor++ % kColors.size()]);
 
     m_emitters.append(em);
     update();

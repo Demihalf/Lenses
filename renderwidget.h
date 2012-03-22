@@ -80,6 +80,8 @@ private:
     bool m_dragging;
     bool m_draggingEmitter;
     QPoint m_lastMousePos;
+
+    int m_lastColor;
 };
 
 #endif // RENDERWIDGET_H

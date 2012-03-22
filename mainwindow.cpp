@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setControlsActive(false);
 
-    ui->plotArea->setLensFocalLength(ui->focalLengthBox->value() / 10.0);
+    ui->plotArea->setLensFocalLength(ui->focalLengthBox->value());
 }
 
 MainWindow::~MainWindow()
@@ -73,8 +73,8 @@ void MainWindow::currentEmitterChanged(int index)
         const RayEmitter& emitter = ui->plotArea->emitterAt(index);
 
         ui->sourceAngleBox->setValue(emitter.angle() * 180.0 / M_PI);
-        ui->sourceXBox->setValue(emitter.pos().x() * 10);
-        ui->sourceYBox->setValue(emitter.pos().y() * 10);
+        ui->sourceXBox->setValue(emitter.pos().x());
+        ui->sourceYBox->setValue(emitter.pos().y());
 
         if (ui->emittersList->currentRow() != index) {
             ui->emittersList->setCurrentRow(index);
@@ -84,15 +84,15 @@ void MainWindow::currentEmitterChanged(int index)
 
 void MainWindow::angleChanged(double angle)
 {
-    if (ui->sourceAngleSlider->value() != angle * 10) {
-        ui->sourceAngleSlider->setValue(angle * 10);
+    if (ui->sourceAngleSlider->value() != angle) {
+        ui->sourceAngleSlider->setValue(angle);
     }
 }
 
 void MainWindow::angleChanged(int angle)
 {
-    if (ui->sourceAngleBox->value() != angle / 10.0) {
-        ui->sourceAngleBox->setValue(angle / 10.0);
+    if (ui->sourceAngleBox->value() != angle) {
+        ui->sourceAngleBox->setValue(angle);
     }
 }
 
