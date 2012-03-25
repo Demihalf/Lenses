@@ -1,0 +1,10 @@
+Requirements:
+
+* Qt 4.7 or higher
+* GCC 4.5 or higher
+
+$ qmake-qt4
+$ make
+$ ./lens
+
+Enjoy!
