@@ -38,24 +38,7 @@ const qreal kScalingFactor = 10.0;
 
 const QPointF kDefaultPos(-25, 15);
 
-const QList<Qt::GlobalColor> kColors =
-{
-    Qt::red,
-    Qt::green,
-    Qt::blue,
-    Qt::cyan,
-    Qt::magenta,
-    Qt::yellow,
-    Qt::gray,
-    Qt::darkRed,
-    Qt::darkGreen,
-    Qt::darkBlue,
-    Qt::darkCyan,
-    Qt::darkMagenta,
-    Qt::darkYellow,
-    Qt::darkGray,
-    Qt::black
-};
+QList<Qt::GlobalColor> kColors;
 
 RenderWidget::RenderWidget(QWidget *parent) :
     QWidget(parent),
@@ -66,6 +49,23 @@ RenderWidget::RenderWidget(QWidget *parent) :
     m_draggingEmitter(false),
     m_lastColor(0)
 {
+   kColors <<
+       Qt::red<<
+       Qt::green<<
+       Qt::blue<<
+       Qt::cyan<<
+       Qt::magenta<<
+       Qt::yellow<<
+       Qt::gray<<
+       Qt::darkRed<<
+       Qt::darkGreen<<
+       Qt::darkBlue<<
+       Qt::darkCyan<<
+       Qt::darkMagenta<<
+       Qt::darkYellow<<
+       Qt::darkGray<<
+       Qt::black;
+
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
 }
@@ -129,7 +129,6 @@ void RenderWidget::paintAxis(QPainter &p)
     p.drawLine(tick2.x(), -m_offset.y(), tick2.x(), height() - m_offset.y());
 
     p.restore();
-
 }
 
 void RenderWidget::paintLens(QPainter &p)
@@ -358,7 +357,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *event)
 
         emPos = internalToCartesian(cartesianToInternal(em.pos()) - offset);
 
-        if ((int)emPos.x() >= -1 && offset.x() < 0) {
+        if (static_cast<int>(emPos.x()) >= -1 && offset.x() < 0) {
             emPos.setX(-1);
         }
 
@@ -387,7 +386,7 @@ void RenderWidget::emitterXChanged(int newValue)
 {
     RayEmitter &emitter = m_emitters[m_currentEmitter];
 
-    if ((int)emitter.pos().x() != newValue) {
+    if (static_cast<int>(emitter.pos().x()) != newValue) {
         emitter.setPos(QPointF(newValue, emitter.pos().y()));
 
         update();
@@ -398,7 +397,7 @@ void RenderWidget::emitterYChanged(int newValue)
 {
     RayEmitter &emitter = m_emitters[m_currentEmitter];
 
-    if ((int)emitter.pos().y() != newValue) {
+    if (static_cast<int>(emitter.pos().y()) != newValue) {
         emitter.setPos(QPointF(emitter.pos().x(), newValue));
 
         update();
