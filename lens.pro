@@ -9,8 +9,7 @@ QT       += core gui
 TARGET = lens
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -std=c++0x
-
+QMAKE_CXXFLAGS += -Wall -Wextra -Wold-style-cast -pedantic
 
 SOURCES += main.cpp\
         mainwindow.cpp \
